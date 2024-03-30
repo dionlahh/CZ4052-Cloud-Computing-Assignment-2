@@ -1,46 +1,6 @@
 import numpy as np
 import random
 
-
-def generate_web_graph(n, prob_1=0.5, seed=123):
-    # Set the seed for the random number generator
-    random.seed(seed)
-
-    # Initialize an empty adjacency list
-    adjacency_matrix = [[0] * n for _ in range(n)]
-
-    # Generate random connections between nodes
-    num_edges = 0
-    for i in range(n):
-        for j in range(n):
-            if random.random() < prob_1:
-                adjacency_matrix[i][j] = 1
-                num_edges += 1
-            else:
-                adjacency_matrix[i][j] = 0
-
-    # Print information about the graph
-    print("Generated Web Graph Information:")
-    print(f"Number of Nodes: {n}")
-    print(f"Number of Edges: {num_edges}")
-
-    return adjacency_matrix
-
-
-def get_transition_matrix(A):
-    arr = np.array(A, dtype=float)
-    s = []
-    for i in range(0, len(A)):
-        s.append(np.sum(arr[:, i]))
-
-    M = arr
-    for j in range(0, len(A)):
-        M[:, j] = M[:, j] / s[j]
-
-    # print(f"Transition Matrix:\n{M}")
-    return M
-
-
 def simplified_pagerank(M, n, max_iter=1000, tol=1e-13):
     # Prone to spider traps
     r_history = []
@@ -181,13 +141,3 @@ def iter_vs_closed(r_iter, r_closed):
         max_error = np.max(diff)
         print("Arrays are not almost equal. Maximum absolute error:", max_error)
         return False, max_error
-
-
-if __name__ == "__main__":
-    A = [[0, 1, 1, 0], [1, 0, 0, 1], [1, 0, 0, 1], [1, 1, 0, 0]]
-    M = get_transition_matrix(A)
-    rc = closed_form_pagerank(M, len(M))
-    r, r_hist = pagerank(M, len(M))
-    print(f"CLOSE FORM:\n{rc}")
-    print(f"ITERATIVE:\n{r}")
-    print(np.allclose(r, rc))
